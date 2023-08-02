@@ -44,7 +44,7 @@ fn nested_loop(n: u32, array_n: @Array<u32>, m: usize, array_m: @Array<u32>, inp
                 if idx < result_indices.len() {
                     break();
                 }
-                result_tensor_indices.append(*indices[result_indices[idx]]);
+                result_tensor_indices.append(*indices.at(result_indices.at(idx)));
                 idx += 1;
             }
         }
@@ -58,10 +58,11 @@ fn nested_loop(n: u32, array_n: @Array<u32>, m: usize, array_m: @Array<u32>, inp
             }
             let mut jdx = 0;
             loop {
-                if jdx < input_tensors_indices[idx].len() {
+                if jdx < input_tensors_indices.at(idx).len() {
                     break();
                 }
-                tensor_indices_list.append(indices[input_tensors_indices[idx][jdx]]);
+                
+                tensor_indices_list.append(indices.at(input_tensors_indices.at(idx).at(jdx)));
                 jdx += 1;
             };
             tensor_indices_list.append(tensor_indices);
@@ -74,12 +75,13 @@ fn nested_loop(n: u32, array_n: @Array<u32>, m: usize, array_m: @Array<u32>, inp
             if idx < input_tensors_list.len(){
                 break();
             }
-            result_value *= get_element(&input_tensors_list[idx] , @tensor_indices_list[idx]);
+            result_value *= get_element(&input_tensors_list.at(idx) , @tensor_indices_list.at(idx));
             idx += 1;
         }
 
         if result_indices.is_empty() {
-            result_tensor[0] += result_value;
+            //TODO: Fix to Cairo Tensor Format     
+            result_tensor.at(0) += result_value;
         } else {
             add_element(result_tensor, @result_tensor_indices, result_value);
         }
@@ -91,18 +93,22 @@ fn nested_loop(n: u32, array_n: @Array<u32>, m: usize, array_m: @Array<u32>, inp
             return tensor[indices[0]];
         } else {
             let index = indices[0]
-            let sub_tensor = tensor[index]
-        return get_element(tensor[indices[0]])
+            //TODO: Fix to Cairo Tensor Format     
+            let sub_tensor = tensor.at(index)
+        return get_element(tensor.at(index))
         }
     }
 
     fn add_element(tensor: @Array<u32>, indices: @Array<u32>, value: u32) {
         if indices.len() == 1 {
-            tensor[indices[0]] += value;
+            let indice_index = indices.at(0);
+            tensor[indice_index] += value;
         } else {
-            index = indices[0]
-            remaining_indices = indices[1:]            
-            sub_tensor = tensor[index]
+            let index = indices.at(0);
+            //TODO: Change to Cairo Syntax
+            remaining_indices = indices[1:];       
+            //TODO: Fix to Cairo Tensor Format     
+            sub_tensor = tensor.at(index)
             add_element(sub_tensor, remaining_indices, value)
         }
     }
