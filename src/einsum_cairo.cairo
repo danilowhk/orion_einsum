@@ -90,9 +90,9 @@ fn nested_loop(n: u32, array_n: @Array<u32>, m: usize, array_m: @Array<u32>, inp
 
     fn get_element(tensor: @Array<u32>, indices: @Array<u32>) -> u32 {
         if indices.len() == 1 {
-            return tensor[indices[0]];
+            return tensor[indices.at(0)];
         } else {
-            let index = indices[0]
+            let index = indices.at(0)
             //TODO: Fix to Cairo Tensor Format     
             let sub_tensor = tensor.at(index)
         return get_element(tensor.at(index))
